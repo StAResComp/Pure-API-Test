@@ -24,14 +24,16 @@ then
     read entered_api_key
     api_key=$entered_api_key
 
+    echo "data_dir=${data_dir}" >> $config_file
+    echo "pure_url=${pure_url}" >> $config_file
+    echo "api_key=${api_key}" >> $config_file
+
     echo ""
     echo ""
     echo "Contents of ${config_file}:"
     echo ""
-
-    echo "data_dir=${data_dir}" >> $config_file
-    echo "pure_url=${pure_url}" >> $config_file
-    echo "api_key=${api_key}" >> $config_file
+    cat "$config_file"
+    echo ""
 fi
 
 
