@@ -1,0 +1,4 @@
+.mode column
+.headers on
+.width 4 10 7 24 25
+

@@ -10,12 +10,14 @@ comparison of request responses before and after a Pure upgrade.
 
 SQLite, cURL
 
+## Installation
+
 ## Usage
+Put this the contents of this repository somewhere on your `PATH`.
 
 ### Making Requests
 
-Put this the contents of this repository somewhere on your `PATH`. Make a
-request by:
+Make a request using:
 
 ```bash
 pure_api_request REQUEST [FORMAT]
@@ -38,6 +40,18 @@ recorded in `~/.pureApiTestConfig`.
 When a request is made, details are logged within `pureApiTest.sqlite` in the
 working directory specified in the config file. The bodies of successful
 responses are saved in the responses directory in the working directory.
+
+### Listing Requests and Responses
+
+The command
+
+```bash
+pure_api_list [REQUEST_ID]
+```
+
+Can be used to list details of requests and responses. If `REQUEST_ID` is
+missing, all requests are listed. If a `REQUEST_ID` is supplied, details of all
+responses to that request are listed.
 
 ### Comparing Responses
 
