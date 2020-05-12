@@ -90,15 +90,19 @@ response_file_path="$responses_path/$response_file"
 # If response was successful, copy body file to responses dir and record in db
 # else, record details of request in db
 
+response_id=0
 if [[ $response_code == 200 ]]
 then
     cp $body_file $response_file_path
-    sqlite3 "$db_path" "INSERT INTO responses VALUES (null, $request_id, 1,
-    '$response_file', '$response_timestamp_iso8601');"
+    response_id=$(sqlite3 "$db_path" "INSERT INTO responses VALUES (null,
+        $request_id, 1, '$response_file', '$response_timestamp_iso8601');
+        SELECT last_insert_rowid();")
 else
-    sqlite3 "$db_path" "INSERT INTO responses VALUES (null, $request_id, 0,
-    null, '$response_timestamp_iso8601');"
+    response_id=$(sqlite3 "$db_path" "INSERT INTO responses VALUES (null,
+        $request_id, 0, null, '$response_timestamp_iso8601');
+        SELECT last_insert_rowid();")
 fi
+echo "Response ID: $response_id"
 
 # Clean up tmp files
 
