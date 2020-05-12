@@ -1,0 +1,59 @@
+#!/bin/bash
+
+response1=$1
+response2=$2
+
+# Check that we have 2 numeric arguments
+re='^[0-9]+$'
+if [ -z $response2 ] || ! [[ $response1 =~ $re ]] || ! [[ $response2 =~ $re ]]
+then
+    echo "Need to specify 2 responses to be compared using their IDs"
+    exit 1
+fi
+
+# Check setup and load from config file
+./setup.sh
+wait
+
+source read_config.sh
+
+# Try and get the corresponding file names
+file1=$(sqlite3 "$db_path"\
+    "SELECT response_file FROM responses WHERE id=$response1;")
+if [ -z $file1 ]
+then
+    echo "First supplied ID is not valid"
+    exit 1
+fi
+
+file2=$(sqlite3 "$db_path"\
+    "SELECT response_file FROM responses WHERE id=$response2;")
+if [ -z $file2 ]
+then
+    echo "Second supplied ID is not valid"
+    exit 1
+fi
+
+# Check if the 2 files are the same format and can be compared
+file1ext=$(echo $file1 | cut -d'.' -f 2)
+file2ext=$(echo $file2 | cut -d'.' -f 2)
+if [ $file1ext != $file2ext ]
+then
+    echo "Specified responses are in different formats and cannot be compared"
+    exit 1
+fi
+
+# Diff the files, using:
+# - json-diff for JSON files
+# - xmllint to format XML prior to diffing
+file1path="$responses_path/$file1"
+file2path="$responses_path/$file2"
+
+if [ $file1ext == json ]
+then
+    json-diff "$file1path" "$file2path"
+else
+    diff <(xmllint --format --exc-c14n "$file1path")\
+        <(xmllint --format --exc-c14n "$file2path")
+fi
+

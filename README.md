@@ -8,7 +8,7 @@ the comparison of request responses before and after a Pure upgrade.
 
 ## Dependencies
 
-SQLite, cURL
+SQLite, cURL, xmllint, [json-diff](https://github.com/andreyvit/json-diff)
 
 ## Installation
 
@@ -56,7 +56,15 @@ responses to that request are listed.
 
 ### Comparing Responses
 
-TODO
+Compare two responses by running
+
+```bash
+pure_api_diff RESPONSE_1_ID RESPONSE_2_ID
+```
+
+Note that comparing JSON requires
+[json-diff](https://github.com/andreyvit/json-diff) while comparing XML
+requires xmllint.
 
 Copyright 2020 University of St Andrews
 
