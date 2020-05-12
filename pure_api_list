@@ -7,15 +7,7 @@ config_file=~/.pureApiTestConfig
 ./setup.sh
 wait
 
-# Read the data directory from config file
-data_dir="$(grep '^data_dir' $config_file | cut -d'=' -f2)"
-
-# Avoid tilde expansion issues later on
-data_dir="$(eval echo ${data_dir})"
-
-# DB details
-db_file="pureApiTest.sqlite"
-db_path="$data_dir/$db_file"
+source read_config.sh
 
 # If no request is specified, list all requests
 # Else, list responses to request with specified id
