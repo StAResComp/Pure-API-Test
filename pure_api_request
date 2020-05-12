@@ -1,0 +1,106 @@
+#!/bin/bash
+
+request=$1
+request_id=0
+format=json
+if [[ $2 == 'xml' ]]
+then
+    format=xml
+fi
+
+config_file=~/.pureApiTestConfig
+
+./setup.sh
+wait
+
+# Read the data directory from config file
+data_dir="$(grep '^data_dir' $config_file | cut -d'=' -f2)"
+
+# Read the Pure URL from config file
+pure_url="$(grep '^pure_url' $config_file | cut -d'=' -f2)"
+
+# Avoid tilde expansion issues later on
+data_dir="$(eval echo ${data_dir})"
+
+# DB details
+db_file="pureApiTest.sqlite"
+db_path="$data_dir/$db_file"
+
+# is the request a number i.e. a reference to an existing request in the DB?
+# if so, set the request id to the corresponding value
+# if not, look for the request in the DB and get the id
+# if not found, insert the request into the database and retrieve the id
+re='^[0-9]+$'
+if [[ $request =~ $re ]] ; then
+    request_id=$request
+    request=$(sqlite3 "$db_path"\
+        "SELECT request FROM requests WHERE id=$request_id;")
+    if [ -z $request ]
+    then
+        echo "Request not found"
+    fi
+else
+    if [[ $request != $pure_url* ]]
+    then
+        request="$pure_url/ws/api/$request"
+    fi
+    request_id=$(sqlite3 "$db_path"\
+        "SELECT id FROM requests WHERE request=\"$request\";")
+    if [ -z $request_id ]
+    then
+        request_id=$(sqlite3 "$db_path"\
+            "INSERT INTO requests VALUES (null, \"$request\");
+                    SELECT last_insert_rowid();")
+    fi
+fi
+
+# Read the API Key from config file
+api_key="$(grep '^api_key' $config_file | cut -d'=' -f2)"
+
+# Make the request, with body and response written to file
+echo "Request ID: $request_id"
+echo "Request: ${request}"
+echo "API Key: $api_key"
+echo "Format: $format"
+
+header_file=headers.tmp
+body_file=body.tmp
+
+curl -o $body_file -D $header_file -X GET\
+    --header "Accept: application/$format"\
+    --header "api-key: $api_key" "$request"
+
+# Parse timestamp and response code from headers
+response_timestamp="$(grep '^Date' $header_file | cut -c 7-)"
+response_timestamp_iso8601=$(date --date="$response_timestamp"\
+    --iso-8601=seconds)
+response_timestamp_for_filename=$(date --date="$response_timestamp"\
+    +"%Y-%m-%d_%H-%M-%S")
+
+response_code="$(grep '^HTTP' $header_file | cut -c 14-)"
+response_code="${response_code//[$'\t\r\n ']}"
+
+responses_dir="responses"
+responses_path="$data_dir/$responses_dir"
+
+# Generate name for response file
+response_file=$response_timestamp_for_filename.$format
+response_file_path="$responses_path/$response_file"
+
+# If response was successful, copy body file to responses dir and record in db
+# else, record details of request in db
+
+if [[ $response_code == 200 ]]
+then
+    cp $body_file $response_file_path
+    sqlite3 "$db_path" "INSERT INTO responses VALUES (null, $request_id, 1,
+    '$response_file', '$response_timestamp_iso8601');"
+else
+    sqlite3 "$db_path" "INSERT INTO responses VALUES (null, $request_id, 0,
+    null, '$response_timestamp_iso8601');"
+fi
+
+# Clean up tmp files
+
+rm *.tmp
+
