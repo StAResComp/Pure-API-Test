@@ -7,4 +7,5 @@ responses and facilitating their comparison. The primary use case is the
 comparison of request responses before and after a Pure upgrade.
 
 Copyright 2020 University of St Andrews
+
 Licensed under the terms of the MIT License
