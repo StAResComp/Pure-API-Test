@@ -12,8 +12,9 @@ SQLite, cURL
 
 ## Installation
 
-## Usage
 Put this the contents of this repository somewhere on your `PATH`.
+
+## Usage
 
 ### Making Requests
 
