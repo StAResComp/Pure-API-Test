@@ -2,9 +2,9 @@
 
 # Pure API Test Utility
 
-A utility for testing the Pure API by making and logging requests and their
-responses and facilitating their comparison. The primary use case is the
-comparison of request responses before and after a Pure upgrade.
+A Bash-based utility for testing the Pure API by making and logging requests
+and their responses and facilitating their comparison. The primary use case is
+the comparison of request responses before and after a Pure upgrade.
 
 ## Dependencies
 
