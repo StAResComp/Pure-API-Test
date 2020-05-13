@@ -8,6 +8,7 @@ CREATE TABLE responses (
   request_id INTEGER NOT NULL,
   success BOOLEAN NOT NULL CHECK (success IN (0,1)),
   response_file TEXT,
+  comment TEXT,
   timestamp DATETIME NOT NULL,
   FOREIGN KEY(request_id) REFERENCES requests(request)
 );

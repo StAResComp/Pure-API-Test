@@ -3,9 +3,15 @@
 request=$1
 request_id=0
 format=json
-if [[ $2 == 'xml' ]]
+comment="$3"
+if [[ "$2" == 'xml' ]]
 then
     format=xml
+else
+    if [[ "$2" != 'json' ]]
+    then
+        comment="$2"
+    fi
 fi
 
 ./setup.sh
@@ -78,11 +84,11 @@ if [[ $response_code == 200 ]]
 then
     cp $body_file $response_file_path
     response_id=$(sqlite3 "$db_path" "INSERT INTO responses VALUES (null,
-        $request_id, 1, '$response_file', '$response_timestamp_iso8601');
+        $request_id, 1, '$response_file', '$comment', '$response_timestamp_iso8601');
         SELECT last_insert_rowid();")
 else
     response_id=$(sqlite3 "$db_path" "INSERT INTO responses VALUES (null,
-        $request_id, 0, null, '$response_timestamp_iso8601');
+        $request_id, 0, '$comment', '$response_timestamp_iso8601');
         SELECT last_insert_rowid();")
 fi
 echo "Response ID: $response_id"

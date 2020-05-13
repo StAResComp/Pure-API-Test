@@ -21,7 +21,7 @@ Put this the contents of this repository somewhere on your `PATH`.
 Make a request using:
 
 ```bash
-pure_api_request REQUEST [FORMAT]
+pure_api_request REQUEST [FORMAT] [COMMENT]
 ```
 
 where
@@ -33,6 +33,7 @@ API version number onwards e.g.
     - 516/research-outputs
   - the ID of a previously executed query
 - `FORMAT` is either `json` or `xml` (defaults to `json` if omitted)
+- `COMMENT` is a comment to be recorded with the response
 
 On first run, you will be asked to specify a working directory, a Pure domain
 (any full-URL requests should match this) and a Pure API Key. These details are
