@@ -1,6 +1,7 @@
 #!/bin/bash
 
 request=$1
+comment_filter=$2
 
 config_file=~/.pureApiTestConfig
 
@@ -19,7 +20,17 @@ else
     re='^[0-9]+$'
     if [[ $request =~ $re ]]
     then
-        sqlite3 -init responses_sqlite_options.txt $db_path\
-            "SELECT * FROM responses WHERE request_id=$request;"
+        if [ -z $comment_filter ]
+        then
+            sqlite3 -init responses_sqlite_options.txt $db_path\
+                "SELECT * FROM responses WHERE request_id=$request;"
+        else
+            sqlite3 -init responses_sqlite_options.txt $db_path\
+                "SELECT * FROM responses WHERE request_id=$request AND comment
+                            LIKE '%$comment_filter%';"
+        fi
+    else
+        echo "Request ID should be an integer"
+        exit 1
     fi
 fi

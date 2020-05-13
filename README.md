@@ -48,12 +48,13 @@ responses are saved in the responses directory in the working directory.
 The command
 
 ```bash
-pure_api_list [REQUEST_ID]
+pure_api_list [REQUEST_ID] [COMMENT_FILTER]
 ```
 
 Can be used to list details of requests and responses. If `REQUEST_ID` is
 missing, all requests are listed. If a `REQUEST_ID` is supplied, details of all
-responses to that request are listed.
+responses to that request are listed. If a `COMMENT_FILTER` is supplied with a
+`REQUEST_ID`, only responses with comments containg the filter are returned.
 
 ### Comparing Responses
 
