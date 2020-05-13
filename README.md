@@ -21,7 +21,7 @@ Put this the contents of this repository somewhere on your `PATH`.
 Make a request using:
 
 ```bash
-pure_api_request REQUEST [FORMAT] [COMMENT]
+pure r REQUEST [FORMAT] [COMMENT]
 ```
 
 where
@@ -48,7 +48,7 @@ responses are saved in the responses directory in the working directory.
 The command
 
 ```bash
-pure_api_list [REQUEST_ID] [COMMENT_FILTER]
+pure l [REQUEST_ID] [COMMENT_FILTER]
 ```
 
 Can be used to list details of requests and responses. If `REQUEST_ID` is
@@ -61,7 +61,7 @@ responses to that request are listed. If a `COMMENT_FILTER` is supplied with a
 Compare two responses by running
 
 ```bash
-pure_api_diff RESPONSE_1_ID RESPONSE_2_ID
+pure d RESPONSE_1_ID RESPONSE_2_ID
 ```
 
 Note that comparing JSON requires

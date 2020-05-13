@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ -z $1 ]
+then
+    echo "No command given. Choose from request, list or diff"
+    exit 1
+fi
+
+cmd_starts_with=${1:0:1}
+
+if [ $cmd_starts_with == 'r' ] || [ $cmd_starts_with == 'R' ]
+then
+    ./pure_api_request "${@:2}"
+fi
+
+if [ $cmd_starts_with == 'l' ] || [ $cmd_starts_with == 'L' ]
+then
+    ./pure_api_list "${@:2}"
+fi
+
+if [ $cmd_starts_with == 'd' ] || [ $cmd_starts_with == 'D' ] ||\
+    [ $cmd_starts_with == 'c' ] || [ $cmd_starts_with == 'C' ]
+then
+    ./pure_api_diff "${@:2}"
+fi
